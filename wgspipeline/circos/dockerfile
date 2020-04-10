@@ -1,14 +1,12 @@
-# build on top of out base image
-FROM r-base
+FROM continuumio/miniconda
+
+RUN conda install -c shahcompbio circos_utils
+RUN conda install -c shahcompbio -c r -c conda-forge -c bioconda r==3.5.1 circos
 
 ADD . /app
 
+ENV NAME circos
 
-#install r packages
-RUN R -e "install.packages('circlize',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('BiocManager',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('BiocManager'); library('BiocManager'); BiocManager::install('ComplexHeatmap')"
-RUN cp /app/circos.R /usr/bin/
+# run R by default
+CMD ["R"]
 
-# Run lumpy when the container launches
-CMD ["bash"]
